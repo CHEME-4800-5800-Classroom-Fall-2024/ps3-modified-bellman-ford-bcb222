@@ -63,16 +63,17 @@ function readnodecapacityfile(filepath::String; comment::Char='#',
     delim::Char=',')::Dict{Int64, Tuple{Int64, Int64}}
 
     # initialize
-    capacities = Dict{Int64,Tuple{Int64,Int64}}()
+    capacities = Dict{Int64, Tuple{Int64, Int64}}()
     
     # TODO: implement this function
-    # throw("The readnodecapacityfile function is not implemented yet.");
     open(filepath, "r") do file
         for line in eachline(file)
             if isempty(line) == true || contains(line, comment) == true
                 continue
             end
-        parts = split(line, delim) .|> String 
+        parts = split(line, delim) .|> String
+        # needed to deal with substrings and make them useful
+        capacities[tryparse(Int64, parts[1])] = (tryparse(Int64, parts[2]), tryparse(Int64, parts[3]));
         end
     end
 
