@@ -134,10 +134,41 @@ function _search(graph::T, start::MyGraphNodeModel, algorithm::ModifiedBellmanFo
     number_of_nodes = length(nodes);
     
     # TODO: implement this function
-    throw("ModifiedBellmanFordAlgorithm not implemented");
+    # throw("ModifiedBellmanFordAlgorithm not implemented");
+    for (_, node) in nodes
+        distances[node.id] = Inf;
+        previous[node.id] = nothing;
+    end
+    distances[start.id] = 0.0;
 
-    # return -
-    return distances, previous;
+    counter = 1;
+    while counter < (number_of_nodes - 1)
+        
+        for (k, _) ∈ graph.edges
+
+            u = k[1];
+            v = k[2];
+
+            alt = distances[u] + weight(graph, u, v);
+            if alt < distances[v]
+                distances[v] = alt;
+                previous[v] = u;
+            end
+        end
+        counter += 1;
+    end
+    
+    for (k, _) ∈ graph.edges
+
+            u = k[1];
+            v = k[2];
+    
+        if distances[u] + weight(graph, u, v) < distances[v]
+                throw(ArgumentError("The graph contains a negative cycle"));
+        end
+    end
+    # runs the other private search function to give unmodified output
+    return _search(graph::T, start, BellmanFordAlgorithm());
 end
 
 
